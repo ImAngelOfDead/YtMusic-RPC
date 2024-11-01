@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "people2json", "people2json\people2json.csproj", "{16E08029-D97F-455C-9D66-DF3D0F326506}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Publish|Any CPU = Publish|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{16E08029-D97F-455C-9D66-DF3D0F326506}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16E08029-D97F-455C-9D66-DF3D0F326506}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16E08029-D97F-455C-9D66-DF3D0F326506}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16E08029-D97F-455C-9D66-DF3D0F326506}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16E08029-D97F-455C-9D66-DF3D0F326506}.Publish|Any CPU.ActiveCfg = Publish|Any CPU
+		{16E08029-D97F-455C-9D66-DF3D0F326506}.Publish|Any CPU.Build.0 = Publish|Any CPU
+		{16E08029-D97F-455C-9D66-DF3D0F326506}.Publish|Any CPU.Deploy.0 = Publish|Any CPU
+	EndGlobalSection
+EndGlobal
