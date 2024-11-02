@@ -3,11 +3,13 @@ using WebSocketSharp.Server;
 using people2json.Models;
 using Newtonsoft.Json;
 using people2json.utils;
+using Logger = people2json.utils.Logger;
+
 namespace people2json.Services
 {
     public class TrackInfoProcessor : WebSocketBehavior
     {
-        
+        public Logger logger = new Logger();
         private readonly DiscordService _discordService;
 
         public TrackInfoProcessor(DiscordService discordService)
@@ -24,7 +26,7 @@ namespace people2json.Services
             }
             else
             {
-                Console.WriteLine("Failed to deserialize data: " + e.Data);
+                logger.LogError("Failed to deserialize data: " + e.Data);
             }
         }
     }

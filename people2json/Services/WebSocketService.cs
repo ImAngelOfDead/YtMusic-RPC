@@ -23,7 +23,7 @@ namespace people2json.Services
         public void Start()
         {
             _server.Start();
-            Console.WriteLine("WebSocket server started on ws://localhost:5000/trackInfo");
+            logger.LogSocket("WebSocket server started on ws://localhost:5000/trackInfo");
         }
 
         public void Stop()

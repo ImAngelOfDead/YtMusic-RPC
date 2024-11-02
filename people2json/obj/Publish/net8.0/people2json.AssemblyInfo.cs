@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("people2json")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Publish")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f20ec11eb62ac8e91fc03f24352b15ac0575c499")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9c8b00bb9d5d0fdd078c2b2b6a4e060efe42bb84")]
 [assembly: System.Reflection.AssemblyProductAttribute("people2json")]
 [assembly: System.Reflection.AssemblyTitleAttribute("people2json")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

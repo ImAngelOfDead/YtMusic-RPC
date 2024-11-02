@@ -21,4 +21,11 @@ public class Logger
         Console.WriteLine($"[WARN]: {message}");
         Console.ResetColor();
     }
+
+    public void LogSocket(string message)
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"[WebSocket]: {message}");
+        Console.ResetColor();
+    }
 }
