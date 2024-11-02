@@ -5,7 +5,6 @@ This project displays the current track from YouTube Music as a Discord Rich Pre
 ## Features
 
 - **Real-time Discord Rich Presence**: Updates your Discord status with the currently playing track from YouTube Music.
-- **Customizable Rich Presence**: Optionally include album art, artist name, and clickable links.
 - **Lightweight and Efficient**: Uses a WebSocket connection for seamless data transfer.
 
 ## Installation
