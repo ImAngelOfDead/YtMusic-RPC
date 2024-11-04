@@ -22,7 +22,7 @@ namespace people2json.Services
 
             if (trackInfo != null)
             {
-                // Проверка на смену трека или исполнителя
+                
                 bool isTrackChanged = _discordService.LastTrack != trackInfo.Track || _discordService.LastArtist != trackInfo.Artist;
 
                 if (isTrackChanged)

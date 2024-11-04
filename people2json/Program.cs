@@ -9,8 +9,8 @@ namespace people2json
     class Program
     {
         private static string LastVersion = "N\\A";
-        static string version = "1.0.5";
-        static string author = "m3th4d0n+Anf1)";
+        static string version = "1.0.6";
+        static string author = "m3th4d0n+Anf1 :)";
         private static string githubUrl = "https://github.com/M3th4d0n/YtMusic-RPC";
         static Logger logger = new Logger();
         static NotifyIcon trayIcon;
@@ -56,26 +56,31 @@ namespace people2json
             trayIcon.DoubleClick += (sender, e) => { RestoreFromTray(); };
         }
 
-        static async Task ShowApplicationInfo(){
+        static async Task ShowApplicationInfo()
+        {
             LastVersion = await GithubService.GetLatestVersionAsync();
 
             AnsiConsole.Write(
                 new Panel(
                         $"[yellow]author:[/] [green]{author}[/]\n[yellow]current version:[/] [green]{version}[/]\n[yellow]github url:[/] [link={githubUrl}]{githubUrl}[/]")
                     .BorderColor(new Spectre.Console.Color(0, 255, 255))
-                    .Header("Info"));
+                    .Header("Info")
+            );
             logger.LogInfo("Program initialized");
 
             bool isAnalyticsEnabled = ConfigManager.IsAnalyticsEnabled();
-            if (isAnalyticsEnabled){
+            if (isAnalyticsEnabled)
+            {
                 AnsiConsole.MarkupLine("[yellow]Analytics enabled[/]");
             }
 
-            if (IsNewerVersion(LastVersion, version)){
+            if (!string.IsNullOrEmpty(LastVersion) && IsNewerVersion(LastVersion, version))
+            {
                 logger.LogWarning($"Latest version: {LastVersion}");
                 logger.LogWarning("A newer version is available. Please consider updating");
             }
         }
+
 
         static async Task InitializeServices(){
             discordService = new DiscordService("1194717480627740753");
