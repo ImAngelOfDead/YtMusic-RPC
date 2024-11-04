@@ -9,8 +9,8 @@ namespace people2json
     class Program
     {
         private static string LastVersion = "N\\A";
-        static string version = "1.0.3";
-        static string author = "m3th4d0n";
+        static string version = "1.0.4";
+        static string author = "m3th4d0n+Anf1)";
         private static string githubUrl = "https://github.com/M3th4d0n/YtMusic-RPC";
         static Logger logger = new Logger();
         static NotifyIcon trayIcon;
