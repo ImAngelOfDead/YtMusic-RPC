@@ -23,5 +23,12 @@ namespace people2json.utils
         {
             AnsiConsole.MarkupLine("[green][[WebSocket]][/] [bold]{0}[/]", message);
         }
+
+        public void LogTrack(string trackMessage)
+        {
+            string paddedMessage = $"\r[blue][[TRACK]][/] [bold]{trackMessage}[/]{new string(' ', Console.WindowWidth - trackMessage.Length - 10)}";
+            AnsiConsole.Markup(paddedMessage);
+        }
+
     }
 }
