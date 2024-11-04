@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Spectre.Console;
 using people2json.utils;
 using people2json.Services;
-using Vanara.PInvoke;
 using System.Text;
 
 namespace people2json
@@ -35,13 +34,7 @@ namespace people2json
                 .BorderColor(new Color(0, 255, 255))
                 .Header("Info"));
             logger.LogInfo("Program initialized");
-
-            bool isAnalyticsEnabled = ConfigManager.IsAnalyticsEnabled();
-            if (isAnalyticsEnabled)
-            {
-                await AnalyticsService.CollectAndSendAnalyticsAsync(version);
-            }
-
+            
             if (IsNewerVersion(LastVersion, version))
             {
                 logger.LogWarning($"Latest version: {LastVersion}");
@@ -58,11 +51,8 @@ namespace people2json
 
             webSocketService.Stop();
             discordService.Dispose();
-        }
-
+        } 
         
-        
-
         static bool IsNewerVersion(string lastVersion, string currentVersion)
         {
             var last = new Version(lastVersion);
