@@ -1,8 +1,4 @@
-﻿using WebSocketSharp;
-using WebSocketSharp.Server;
-using people2json.Models;
-using Newtonsoft.Json;
-using people2json.utils;
+﻿using WebSocketSharp.Server;
 using Logger = people2json.utils.Logger;
 
 namespace people2json.Services
@@ -17,7 +13,7 @@ namespace people2json.Services
         {
             _server = new WebSocketServer("ws://localhost:5000");
             _discordService = discordService;
-            _server.AddWebSocketService<TrackInfoProcessor>(path, () => new TrackInfoProcessor(_discordService));
+            _server.AddWebSocketService(path, () => new TrackInfoProcessor(_discordService));
         }
 
         public void Start()

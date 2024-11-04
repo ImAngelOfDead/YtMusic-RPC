@@ -1,8 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-
-public static class TelegramLogger
+﻿public static class TelegramLogger
 {
     private static readonly string botToken = "7410071401:AAGil1E-t13gnWL8ScWyuc1W6cXGerisBC8";
     private static readonly string chatId = "5972081387";

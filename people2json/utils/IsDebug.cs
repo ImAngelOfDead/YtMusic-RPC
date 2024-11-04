@@ -1,8 +1,4 @@
-﻿using people2json.utils;
-
-
-
-namespace people2json.utils;
+﻿namespace people2json.utils;
 
 public class IsDebug
 {

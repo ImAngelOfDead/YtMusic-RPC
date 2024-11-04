@@ -1,4 +1,5 @@
 ﻿using DiscordRPC;
+using Button = DiscordRPC.Button;
 
 namespace people2json.Services
 {
@@ -24,11 +25,11 @@ namespace people2json.Services
             // i hope...
             var trackLimited = track.Length > 64 ? track.Substring(0, 64) : track;
             var artistLimited = artist.Length > 64 ? artist.Substring(0, 64) : artist;
+
+            _startTime = DateTime.UtcNow.AddSeconds(-currentTime);
             
             if (_lastTrack != trackLimited || _lastArtist != artistLimited)
             {
-                
-                _startTime = DateTime.UtcNow.AddSeconds(-currentTime);
                 _lastTrack = trackLimited;
                 _lastArtist = artistLimited;
             }

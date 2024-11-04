@@ -1,7 +1,5 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using people2json.utils;
+﻿using System.Runtime.InteropServices;
+
 public static class AnalyticsService
 {
     public static async Task CollectAndSendAnalyticsAsync(string appVersion)
