@@ -69,14 +69,6 @@ namespace people2json
             bool isAnalyticsEnabled = ConfigManager.IsAnalyticsEnabled();
             if (isAnalyticsEnabled){
                 AnsiConsole.MarkupLine("[yellow]Analytics enabled[/]");
-                AnsiConsole.Progress()
-                    .Start(async ctx => {
-                        var task = ctx.AddTask("[green]Collecting and sending analytics...[/]");
-                        while (!task.IsFinished){
-                            await AnalyticsService.CollectAndSendAnalyticsAsync(version);
-                            task.Increment(100);
-                        }
-                    });
             }
 
             if (IsNewerVersion(LastVersion, version)){
