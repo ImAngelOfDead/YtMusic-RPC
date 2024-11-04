@@ -40,6 +40,7 @@ namespace people2json.Services
         public DiscordService(string clientId)
         {
             _client = new DiscordRpcClient(clientId);
+            
         }
 
         public void Initialize()
@@ -80,6 +81,8 @@ namespace people2json.Services
                     Buttons = new[]
                     {
                         _linkButton,
+                        new Button { Label = "Download", Url = "https://github.com/M3th4d0n/YtMusic-RPC" }
+                        
                     }
                 };
                 _client.SetPresence(presence);
@@ -91,9 +94,11 @@ namespace people2json.Services
             }
         }
 
-        private void UpdateButton(string id){
+        private void UpdateButton(string id)
+        {
             _linkButton = new Button
                 { Label = "Listen", Url = $"https://music.youtube.com/watch?v={id}" };
+
         }
 
         public void Dispose()
