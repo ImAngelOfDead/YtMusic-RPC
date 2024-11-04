@@ -1,4 +1,5 @@
 ﻿using DiscordRPC;
+using Button = DiscordRPC.Button;
 
 namespace people2json.Services
 {

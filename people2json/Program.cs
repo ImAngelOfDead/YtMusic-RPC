@@ -1,26 +1,36 @@
 ﻿using System;
-using people2json.utils;
-using people2json.Services;
-using people2json.Models;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Spectre.Console;
+using people2json.utils;
+using people2json.Services;
+using Vanara.PInvoke;
+using System.Text;
 
 namespace people2json
 {
     class Program
     {
+
         private static string LastVersion = "N\\A";
         static string version = "1.0.2";
         static string author = "m3th4d0n";
         private static string githubUrl = "https://github.com/M3th4d0n/YtMusic-RPC";
         static Logger logger = new Logger();
+        
+        
+         static async Task Main()
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            await RunApplication();
+            
+        }
 
-        static async Task Main()
+        private static async Task RunApplication()
         {
             
             LastVersion = await GithubService.GetLatestVersionAsync();
-            
-            
             AnsiConsole.Write(new Panel($"[yellow]author:[/] [green]{author}[/]\n[yellow]current version:[/] [green]{version}[/]\n[yellow]github url:[/] [link={githubUrl}]{githubUrl}[/]")
                 .BorderColor(new Color(0, 255, 255))
                 .Header("Info"));
@@ -29,17 +39,7 @@ namespace people2json
             bool isAnalyticsEnabled = ConfigManager.IsAnalyticsEnabled();
             if (isAnalyticsEnabled)
             {
-                AnsiConsole.MarkupLine("[yellow]Analytics enabled[/]");
-                AnsiConsole.Progress()
-                    .Start(async ctx =>
-                    {
-                        var task = ctx.AddTask("[green]Collecting and sending analytics...[/]");
-                        while (!task.IsFinished)
-                        {
-                            await AnalyticsService.CollectAndSendAnalyticsAsync(version);
-                            task.Increment(100);
-                        }
-                    });
+                await AnalyticsService.CollectAndSendAnalyticsAsync(version);
             }
 
             if (IsNewerVersion(LastVersion, version))
@@ -53,18 +53,23 @@ namespace people2json
 
             var webSocketService = new WebSocketService("/trackInfo", discordService);
             webSocketService.Start();
-            
+
             Console.ReadKey();
 
             webSocketService.Stop();
             discordService.Dispose();
         }
+
         
+        
+
         static bool IsNewerVersion(string lastVersion, string currentVersion)
         {
             var last = new Version(lastVersion);
             var current = new Version(currentVersion);
             return last > current;
         }
+
+        
     }
 }

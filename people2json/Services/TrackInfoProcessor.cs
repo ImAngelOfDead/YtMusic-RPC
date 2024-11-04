@@ -24,7 +24,7 @@ namespace people2json.Services
             if (trackInfo != null)
             { //string track, string artist, string cover, int currentTime, int totalDuration
                 _discordService.UpdatePresence(trackInfo.Track, trackInfo.Artist, trackInfo.Cover, trackInfo.CurrentTime);
-                
+                logger.LogTrack(trackInfo.Track);
             }
             
             else
