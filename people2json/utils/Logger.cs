@@ -1,31 +1,27 @@
-﻿namespace people2json.utils;
+﻿using Spectre.Console;
 
-public class Logger
+namespace people2json.utils
 {
-    public void LogInfo(string message) {
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine($"[INFO]: {message}");
-        Console.ResetColor();
-    }
-
-    public void LogError(string message)
+    public class Logger
     {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine($"[ERROR]: {message}");
-        Console.ResetColor();
-    }
+        public void LogInfo(string message)
+        {
+            AnsiConsole.MarkupLine("[cyan][[INFO]][/] [bold]{0}[/]", message);
+        }
 
-    public void LogWarning(string message)
-    {
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine($"[WARN]: {message}");
-        Console.ResetColor();
-    }
+        public void LogError(string message)
+        {
+            AnsiConsole.MarkupLine("[red][[ERROR]][/] [bold]{0}[/]", message);
+        }
 
-    public void LogSocket(string message)
-    {
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"[WebSocket]: {message}");
-        Console.ResetColor();
+        public void LogWarning(string message)
+        {
+            AnsiConsole.MarkupLine("[yellow][[WARN]][/] [bold]{0}[/]", message);
+        }
+
+        public void LogSocket(string message)
+        {
+            AnsiConsole.MarkupLine("[green][[WebSocket]][/] [bold]{0}[/]", message);
+        }
     }
 }

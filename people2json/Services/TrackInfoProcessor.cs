@@ -20,10 +20,13 @@ namespace people2json.Services
         protected override void OnMessage(MessageEventArgs e)
         {
             var trackInfo = JsonConvert.DeserializeObject<TrackInfo>(e.Data);
+
             if (trackInfo != null)
-            {
-                _discordService.UpdatePresence(trackInfo.Track, trackInfo.Artist, trackInfo.Cover);
+            { //string track, string artist, string cover, int currentTime, int totalDuration
+                _discordService.UpdatePresence(trackInfo.Track, trackInfo.Artist, trackInfo.Cover, trackInfo.CurrentTime);
+                
             }
+            
             else
             {
                 logger.LogError("Failed to deserialize data: " + e.Data);

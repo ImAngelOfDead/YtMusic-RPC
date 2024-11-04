@@ -1,12 +1,13 @@
 ﻿using DiscordRPC;
-using System;
 
 namespace people2json.Services
 {
-    public class DiscordService : IDisposable
+    public class DiscordService
     {
-        private readonly DiscordRpcClient _client;
-        private System.Timers.Timer _rpcUpdateTimer;
+        private DiscordRpcClient _client;
+        private string _lastTrack;
+        private string _lastArtist;
+        private DateTime _startTime;
 
         public DiscordService(string clientId)
         {
@@ -16,29 +17,53 @@ namespace people2json.Services
         public void Initialize()
         {
             _client.Initialize();
-            _rpcUpdateTimer = new System.Timers.Timer(15000);
-            _rpcUpdateTimer.Elapsed += (sender, e) => _client.Invoke();
-            _rpcUpdateTimer.Start();
         }
 
-        public void UpdatePresence(string track, string artist, string cover)
+        public void UpdatePresence(string track, string artist, string cover, int currentTime)
         {
-            _client.SetPresence(new RichPresence
+            // i hope...
+            var trackLimited = track.Length > 64 ? track.Substring(0, 64) : track;
+            var artistLimited = artist.Length > 64 ? artist.Substring(0, 64) : artist;
+            
+            if (_lastTrack != trackLimited || _lastArtist != artistLimited)
             {
-                Details = track,
-                State = artist,
-                Buttons = new[] { new Button { Label = "View on GitHub", Url = "https://github.com/m3th4d0n/YtMusic-RPC" } },
-                Assets = new Assets
+                
+                _startTime = DateTime.UtcNow.AddSeconds(-currentTime);
+                _lastTrack = trackLimited;
+                _lastArtist = artistLimited;
+            }
+
+            try
+            {
+                var presence = new RichPresence
                 {
-                    LargeImageKey = "track_cover",
-                    LargeImageText = track
-                }
-            });
+                    Details = trackLimited,
+                    State = artistLimited,
+                    Assets = new Assets
+                    {
+                        LargeImageKey = cover,
+                        LargeImageText = trackLimited
+                    },
+                    Timestamps = new Timestamps
+                    {
+                        Start = _startTime
+                    },
+                    Buttons = new[]
+                    {
+                        new Button { Label = "github link", Url = "https://github.com/M3th4d0n/YtMusic-RPC" }
+                    }
+                };
+                _client.SetPresence(presence);
+            }
+            catch (DiscordRPC.Exceptions.StringOutOfRangeException ex)
+            {
+                Console.WriteLine($"[ERROR] Discord RPC Exception: {ex.Message}");
+                Console.WriteLine($"[ERROR] Track: '{trackLimited}', Artist: '{artistLimited}'");
+            }
         }
 
         public void Dispose()
         {
-            _rpcUpdateTimer?.Stop();
             _client.Dispose();
         }
     }

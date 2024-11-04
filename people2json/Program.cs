@@ -3,6 +3,7 @@ using people2json.utils;
 using people2json.Services;
 using people2json.Models;
 using System.Threading.Tasks;
+using Spectre.Console;
 
 namespace people2json
 {
@@ -16,26 +17,36 @@ namespace people2json
 
         static async Task Main()
         {
+            
             LastVersion = await GithubService.GetLatestVersionAsync();
             
+            
+            AnsiConsole.Write(new Panel($"[yellow]author:[/] [green]{author}[/]\n[yellow]current version:[/] [green]{version}[/]\n[yellow]github url:[/] [link={githubUrl}]{githubUrl}[/]")
+                .BorderColor(new Color(0, 255, 255))
+                .Header("Info"));
             logger.LogInfo("Program initialized");
+
             bool isAnalyticsEnabled = ConfigManager.IsAnalyticsEnabled();
-        
             if (isAnalyticsEnabled)
             {
-                await AnalyticsService.CollectAndSendAnalyticsAsync(version);
+                AnsiConsole.MarkupLine("[yellow]Analytics enabled[/]");
+                AnsiConsole.Progress()
+                    .Start(async ctx =>
+                    {
+                        var task = ctx.AddTask("[green]Collecting and sending analytics...[/]");
+                        while (!task.IsFinished)
+                        {
+                            await AnalyticsService.CollectAndSendAnalyticsAsync(version);
+                            task.Increment(100);
+                        }
+                    });
             }
-
-            logger.LogInfo($"Author: {author}");
-            logger.LogInfo("Current version: " + version);
 
             if (IsNewerVersion(LastVersion, version))
             {
-                logger.LogInfo("Latest version: " + LastVersion);
-                logger.LogWarning("A newer version is available. Please consider updating.");
+                logger.LogWarning($"Latest version: {LastVersion}");
+                logger.LogWarning("A newer version is available. Please consider updating");
             }
-
-            logger.LogInfo($"Github URL: {githubUrl}");
 
             var discordService = new DiscordService("1194717480627740753");
             discordService.Initialize();
