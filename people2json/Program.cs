@@ -9,7 +9,7 @@ namespace people2json
     class Program
     {
         private static string LastVersion = "N\\A";
-        static string version = "1.0.4";
+        static string version = "1.0.5";
         static string author = "m3th4d0n+Anf1)";
         private static string githubUrl = "https://github.com/M3th4d0n/YtMusic-RPC";
         static Logger logger = new Logger();
@@ -36,7 +36,8 @@ namespace people2json
             await ShowApplicationInfo();
             await InitializeServices();
             await InitializeTrayIcon();
-
+            logger.LogInfo("After a few seconds, program will disappear into tray");
+            Thread.Sleep(5000);
             MinimizeToTray();
 
             Application.Run();

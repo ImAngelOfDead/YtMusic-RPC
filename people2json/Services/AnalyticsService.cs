@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-
+using people2json.utils;
 public static class AnalyticsService
 {
     public static async Task CollectAndSendAnalyticsAsync(string appVersion)
