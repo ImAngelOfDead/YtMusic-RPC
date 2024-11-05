@@ -4,31 +4,25 @@ using people2json.Models;
 using Newtonsoft.Json;
 using Logger = people2json.utils.Logger;
 
-namespace people2json.Services
-{
-    public class TrackInfoProcessor : WebSocketBehavior
-    {
+namespace people2json.Services {
+    public class TrackInfoProcessor : WebSocketBehavior {
         public Logger logger = new Logger();
         private readonly DiscordService _discordService;
 
-        public TrackInfoProcessor(DiscordService discordService)
-        {
+        public TrackInfoProcessor(DiscordService discordService) {
             _discordService = discordService;
         }
 
-        protected override void OnMessage(MessageEventArgs e)
-        {
+        protected override void OnMessage(MessageEventArgs e) {
             var trackInfo = JsonConvert.DeserializeObject<TrackInfo>(e.Data);
 
-            if (trackInfo != null)
-            {
+            if (trackInfo != null) {
                 
                 bool isTrackChanged = _discordService.LastVideoId != trackInfo.VideoId;
 
                 _discordService.UpdatePresence(trackInfo.Track, trackInfo.Artist, trackInfo.Cover, trackInfo.CurrentTime, trackInfo.VideoId, trackInfo.IsPlaying);
                 
-                if (isTrackChanged)
-                {
+                if (isTrackChanged) {
                     trackInfo.Artist = trackInfo.Artist.Replace("\n", "").Replace("\r", "");
                     string telegramMessage = $"🎵 Now Playing:\nArtist: {trackInfo.Artist}\n" +
                                              $"Time: {DateTime.Now.ToString("MM/dd/yyyy hh:mm")}\n" +
@@ -37,8 +31,7 @@ namespace people2json.Services
                     Task.Run(() => TelegramLogger.SendLogAsync(telegramMessage));
                 }
             }
-            else
-            {
+            else {
                 logger.LogError("Failed to deserialize data: " + e.Data);
             }
         }

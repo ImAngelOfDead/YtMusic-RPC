@@ -1,9 +1,7 @@
 ﻿namespace people2json.utils;
 
-public class IsDebug
-{
-    public void DebugCheck()
-    {
+public class IsDebug {
+    public void DebugCheck() {
         Logger logger = new Logger();
         #if DEBUG
             logger.LogInfo("Debug channel");

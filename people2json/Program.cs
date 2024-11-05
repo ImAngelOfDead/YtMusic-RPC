@@ -10,10 +10,8 @@ using Spectre.Console;
 using System.Windows.Forms;
 using Panel = Spectre.Console.Panel;
 
-namespace people2json
-{
-    class Program
-    {
+namespace people2json {
+    class Program {
         private static readonly string UpdaterPath = Path.Combine(Directory.GetCurrentDirectory(), "updater.exe");
         private static string LastVersion = "N\\A";
         private static readonly string version = "1.0.9"; 
@@ -29,27 +27,22 @@ namespace people2json
         [DllImport("user32.dll")]
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-        public static void SetConsoleWindowVisibility(bool visible)
-        {
+        public static void SetConsoleWindowVisibility(bool visible) {
             IntPtr hWnd = FindWindow(null, Console.Title);
-            if (hWnd != IntPtr.Zero)
-            {
+            if (hWnd != IntPtr.Zero) {
                 ShowWindow(hWnd, visible ? 1 : 0); // 1 = SW_SHOWNORMAL, 0 = SW_HIDE
             }
         }
 
         [STAThread]
-        static async Task Main(string[] args)
-        {
+        static async Task Main(string[] args) {
             Console.Title = "by m3th4d0n & Anfi1";
-
-            if (await CheckForUpdateAsync())
-            {
+            
+            if (await CheckForUpdateAsync()) {
                 await DownloadUpdaterAsync();
                 StartUpdater(LastVersion);
                 
             }
-
             ShowApplicationInfo();
             await InitializeServices();
             InitializeTrayIcon();
@@ -61,25 +54,21 @@ namespace people2json
             Application.Run();
         }
 
-        private static async Task<bool> CheckForUpdateAsync()
-        {
+        private static async Task<bool> CheckForUpdateAsync() {
             LastVersion = await GithubService.GetLatestVersionAsync();
             return LastVersion != version;
         }
 
-        private static async Task DownloadUpdaterAsync()
-        {
+        private static async Task DownloadUpdaterAsync() {
             using var client = new HttpClient();
             var updaterUrl = "https://raw.githubusercontent.com/M3th4d0n/YtMusic-RPC/refs/heads/master/Updater.exe";
             var data = await client.GetByteArrayAsync(updaterUrl);
             await File.WriteAllBytesAsync(UpdaterPath, data);
         }
 
-        private static void StartUpdater(string latestVersion)
-        {
+        private static void StartUpdater(string latestVersion) {
             var updaterCommand = $"/C start \"\" \"{UpdaterPath}\" {latestVersion} && exit";
-            var startInfo = new ProcessStartInfo
-            {
+            var startInfo = new ProcessStartInfo {
                 FileName = "cmd.exe",
                 Arguments = updaterCommand,
                 WindowStyle = ProcessWindowStyle.Hidden,
@@ -93,8 +82,7 @@ namespace people2json
         }
 
 
-        private static void ShowApplicationInfo()
-        {
+        private static void ShowApplicationInfo() {
             AnsiConsole.Write(
                 new Panel(
                         $"[yellow]Author:[/] [cyan][link=https://github.com/M3th4d0n]m3th4d0n[/][/] [green]&[/] [cyan][link=https://github.com/Anfi1]Anfi1[/][/]\n" +
@@ -105,17 +93,14 @@ namespace people2json
             );
             logger.LogInfo("Program initialized");
 
-            if (!string.IsNullOrEmpty(LastVersion) && IsNewerVersion(LastVersion, version))
-            {
+            if (!string.IsNullOrEmpty(LastVersion) && IsNewerVersion(LastVersion, version)) {
                 logger.LogWarning($"Latest version: {LastVersion}");
                 logger.LogWarning("A newer version is available. Please consider updating");
             }
         }
 
-        private static void InitializeTrayIcon()
-        {
-            trayIcon = new NotifyIcon
-            {
+        private static void InitializeTrayIcon() {
+            trayIcon = new NotifyIcon {
                 Icon = new System.Drawing.Icon("icon.ico"),
                 Visible = true,
                 Text = "YtMusic-RPC",
@@ -126,8 +111,7 @@ namespace people2json
             trayIcon.DoubleClick += (sender, e) => RestoreFromTray();
         }
 
-        private static async Task InitializeServices()
-        {
+        private static async Task InitializeServices() {
             discordService = new DiscordService("1194717480627740753");
             discordService.Initialize();
 
@@ -135,31 +119,26 @@ namespace people2json
             webSocketService.Start();
         }
 
-        private static bool IsNewerVersion(string lastVersion, string currentVersion)
-        {
+        private static bool IsNewerVersion(string lastVersion, string currentVersion) {
             return new Version(lastVersion) > new Version(currentVersion);
         }
 
-        private static void OnExit(object sender, EventArgs e)
-        {
+        private static void OnExit(object sender, EventArgs e) {
             Cleanup();
         }
 
-        private static void Cleanup()
-        {
+        private static void Cleanup() {
             webSocketService.Stop();
             discordService.Dispose();
             trayIcon.Dispose();
             Application.Exit();
         }
 
-        private static void RestoreFromTray()
-        {
+        private static void RestoreFromTray() {
             SetConsoleWindowVisibility(true);
         }
 
-        private static void MinimizeToTray()
-        {
+        private static void MinimizeToTray() {
             SetConsoleWindowVisibility(false);
         }
     }

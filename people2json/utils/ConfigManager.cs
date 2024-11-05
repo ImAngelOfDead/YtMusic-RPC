@@ -1,13 +1,10 @@
 ﻿using people2json.utils;
-public static class ConfigManager
-{
+public static class ConfigManager {
     private static readonly string configFilePath = "config.txt";
     static Logger logger = new Logger();
 
-    public static bool IsAnalyticsEnabled()
-    {
-        if (!File.Exists(configFilePath))
-        {
+    public static bool IsAnalyticsEnabled() {
+        if (!File.Exists(configFilePath)) {
             return RequestAnalyticsPermission();
         }
 
@@ -15,25 +12,21 @@ public static class ConfigManager
         return configContent.Contains("AnalyticsEnabled=true");
     }
 
-    public static string GetBotToken()
-    {
+    public static string GetBotToken() {
         return GetConfigValue("BotToken");
     }
 
-    public static string GetChatId()
-    {
+    public static string GetChatId() {
         return GetConfigValue("ChatId");
     }
 
-    private static string GetConfigValue(string key)
-    {
+    private static string GetConfigValue(string key) {
         if (!File.Exists(configFilePath)) return null;
 
         var configLines = File.ReadAllLines(configFilePath);
-        foreach (var line in configLines)
-        {
-            if (line.StartsWith($"{key}="))
-            {
+        
+        foreach (var line in configLines) {
+            if (line.StartsWith($"{key}=")) {
                 return line.Substring($"{key}=".Length).Trim();
             }
         }
@@ -41,8 +34,7 @@ public static class ConfigManager
         return null;
     }
 
-    private static bool RequestAnalyticsPermission()
-    {
+    private static bool RequestAnalyticsPermission() {
         logger.LogInfo("Would you like to save track history? (y/n): ");
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.Write("> ");
@@ -51,8 +43,7 @@ public static class ConfigManager
         Console.ResetColor();
         bool isAnalyticsEnabled = input == "y";
 
-        if (isAnalyticsEnabled)
-        {
+        if (isAnalyticsEnabled) {
             logger.LogInfo("Please enter your Telegram Bot Token: ");
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.Write("> ");
@@ -65,8 +56,7 @@ public static class ConfigManager
 
             SaveConfig(isAnalyticsEnabled, botToken, chatId);
         }
-        else
-        {
+        else {
             SaveConfig(isAnalyticsEnabled);
             logger.LogInfo("Okay!");
         }
@@ -74,8 +64,7 @@ public static class ConfigManager
         return isAnalyticsEnabled;
     }
 
-    private static void SaveConfig(bool isAnalyticsEnabled, string botToken = null, string chatId = null) 
-    {
+    private static void SaveConfig(bool isAnalyticsEnabled, string botToken = null, string chatId = null) {
         string configContent = $"AnalyticsEnabled={(isAnalyticsEnabled ? "true" : "false")}\n" +
                                $"BotToken={botToken ?? ""}\n" +
                                $"ChatId={chatId ?? ""}";

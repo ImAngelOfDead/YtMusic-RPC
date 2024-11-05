@@ -1,19 +1,14 @@
 ﻿using Newtonsoft.Json.Linq;
 
-namespace people2json.utils
-{
-    public static class GithubService
-    {
+namespace people2json.utils {
+    public static class GithubService {
         private static readonly string apiUrl = "https://api.github.com/repos/M3th4d0n/YtMusic-RPC/releases/latest";
 
-        public static async Task<string> GetLatestVersionAsync()
-        {
-            using (HttpClient client = new HttpClient())
-            {
+        public static async Task<string> GetLatestVersionAsync() {
+            using (HttpClient client = new HttpClient()) {
                 client.DefaultRequestHeaders.Add("User-Agent", "request");
 
-                try
-                {
+                try {
                     HttpResponseMessage response = await client.GetAsync(apiUrl);
                     response.EnsureSuccessStatusCode();
 
@@ -22,8 +17,7 @@ namespace people2json.utils
 
                     return release["tag_name"]?.ToString() ?? "Version not found";
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     Console.WriteLine("Error fetching version from GitHub: " + ex.Message);
                     return "Version fetch error";
                 }
