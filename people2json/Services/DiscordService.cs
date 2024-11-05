@@ -13,6 +13,7 @@ namespace people2json.Services
         private string _lastId;
         private DateTime _startTime;
         private Button _linkButton = new Button();
+        private Button downloadButton = new Button();
         
         public string LastArtist{
             get{ return _lastArtist; }
@@ -40,12 +41,13 @@ namespace people2json.Services
         public DiscordService(string clientId)
         {
             _client = new DiscordRpcClient(clientId);
-            
         }
 
         public void Initialize()
         {
             _client.Initialize();
+            downloadButton = new Button
+                { Label = "Download", Url = "https://github.com/M3th4d0n/YtMusic-RPC" };
         }
 
         public void UpdatePresence(string track, string artist, string cover, int currentTime, string videoId, bool isPlaying = true)
@@ -81,8 +83,7 @@ namespace people2json.Services
                     Buttons = new[]
                     {
                         _linkButton,
-                        new Button { Label = "Download", Url = "https://github.com/M3th4d0n/YtMusic-RPC" }
-                        
+                        downloadButton
                     }
                 };
                 _client.SetPresence(presence);
@@ -98,7 +99,6 @@ namespace people2json.Services
         {
             _linkButton = new Button
                 { Label = "Listen", Url = $"https://music.youtube.com/watch?v={id}" };
-
         }
 
         public void Dispose()
