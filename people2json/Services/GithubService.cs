@@ -1,26 +1,27 @@
 ﻿using Newtonsoft.Json.Linq;
 
-namespace people2json.utils {
-    public static class GithubService {
-        private static readonly string apiUrl = "https://api.github.com/repos/M3th4d0n/YtMusic-RPC/releases/latest";
+namespace YTMusicRPC.utils;
 
-        public static async Task<string> GetLatestVersionAsync() {
-            using (HttpClient client = new HttpClient()) {
-                client.DefaultRequestHeaders.Add("User-Agent", "request");
+public static class GithubService
+{
+    private static readonly string apiUrl = "https://api.github.com/repos/M3th4d0n/YtMusic-RPC/releases/latest";
 
-                try {
-                    HttpResponseMessage response = await client.GetAsync(apiUrl);
-                    response.EnsureSuccessStatusCode();
+    public static async Task<string> GetLatestVersionAsync(){
+        using (HttpClient client = new HttpClient()){
+            client.DefaultRequestHeaders.Add("User-Agent", "request");
 
-                    string responseBody = await response.Content.ReadAsStringAsync();
-                    JObject release = JObject.Parse(responseBody);
+            try{
+                HttpResponseMessage response = await client.GetAsync(apiUrl);
+                response.EnsureSuccessStatusCode();
 
-                    return release["tag_name"]?.ToString() ?? "Version not found";
-                }
-                catch (Exception ex) {
-                    Console.WriteLine("Error fetching version from GitHub: " + ex.Message);
-                    return "Version fetch error";
-                }
+                string responseBody = await response.Content.ReadAsStringAsync();
+                JObject release = JObject.Parse(responseBody);
+
+                return release["tag_name"]?.ToString() ?? "Version not found";
+            }
+            catch (Exception ex){
+                Console.WriteLine("Error fetching version from GitHub: " + ex.Message);
+                return "Version fetch error";
             }
         }
     }

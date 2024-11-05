@@ -8,6 +8,8 @@
         <Configurations>Debug;Release;Publish</Configurations>
         <Platforms>AnyCPU</Platforms>
         <UseWindowsForms>true</UseWindowsForms>
+        <AssemblyName>YTMusicRPC</AssemblyName>
+        <RootNamespace>YTMusicRPC</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

@@ -1,4 +1,4 @@
-﻿using people2json.utils;
+﻿using YTMusicRPC.utils;
 public static class ConfigManager {
     private static readonly string configFilePath = "config.txt";
     static Logger logger = new Logger();

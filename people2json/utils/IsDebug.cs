@@ -1,4 +1,4 @@
-﻿namespace people2json.utils;
+﻿namespace YTMusicRPC.utils;
 
 public class IsDebug {
     public void DebugCheck() {
