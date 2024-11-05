@@ -5,7 +5,7 @@ using YTMusicRPC.utils;
 using Spectre.Console;
 using Panel = Spectre.Console.Panel;
 
-// git reset --hard origin/main
+// git reset --hard origin/master
 
 namespace YTMusicRPC;
 
