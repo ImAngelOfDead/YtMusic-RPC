@@ -36,7 +36,7 @@ Check for new releases of this application [here](https://github.com/M3th4d0n/Yt
 
 ## Contributing
 
-Feel free to submit pull requests or report issues to improve functionality or suggest new features.
+Feel free to submit pull requests or report [issues](https://github.com/M3th4d0n/YtMusic-RPC/issues/new) to improve functionality or suggest new features.
 
 ## License
 
