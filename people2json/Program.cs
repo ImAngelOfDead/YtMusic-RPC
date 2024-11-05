@@ -55,7 +55,7 @@ namespace people2json
             InitializeTrayIcon();
 
             logger.LogInfo("After a few seconds, program will disappear into tray");
-            Thread.Sleep(5000);
+            Thread.Sleep(5000); 
             MinimizeToTray();
 
             Application.Run();

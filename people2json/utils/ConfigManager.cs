@@ -68,6 +68,7 @@ public static class ConfigManager
         else
         {
             SaveConfig(isAnalyticsEnabled);
+            logger.LogInfo("Okay!");
         }
 
         return isAnalyticsEnabled;
