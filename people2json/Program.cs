@@ -16,7 +16,7 @@ namespace people2json
     {
         private static readonly string UpdaterPath = Path.Combine(Directory.GetCurrentDirectory(), "updater.exe");
         private static string LastVersion = "N\\A";
-        private static readonly string version = "1.0.8";
+        private static readonly string version = "1.0.9"; 
         private static readonly string githubUrl = "https://github.com/M3th4d0n/YtMusic-RPC";
         private static readonly Logger logger = new Logger();
         private static NotifyIcon trayIcon;
@@ -47,7 +47,7 @@ namespace people2json
             {
                 await DownloadUpdaterAsync();
                 StartUpdater(LastVersion);
-                return; 
+                
             }
 
             ShowApplicationInfo();
@@ -55,6 +55,7 @@ namespace people2json
             InitializeTrayIcon();
 
             logger.LogInfo("After a few seconds, program will disappear into tray");
+            Thread.Sleep(5000);
             MinimizeToTray();
 
             Application.Run();
@@ -69,21 +70,28 @@ namespace people2json
         private static async Task DownloadUpdaterAsync()
         {
             using var client = new HttpClient();
-            var updaterUrl = $"{githubUrl}/releases/download/{LastVersion}/updater.exe";
+            var updaterUrl = "https://raw.githubusercontent.com/M3th4d0n/YtMusic-RPC/refs/heads/master/Updater.exe";
             var data = await client.GetByteArrayAsync(updaterUrl);
             await File.WriteAllBytesAsync(UpdaterPath, data);
         }
 
         private static void StartUpdater(string latestVersion)
         {
+            var updaterCommand = $"/C start \"\" \"{UpdaterPath}\" {latestVersion} && exit";
             var startInfo = new ProcessStartInfo
             {
-                FileName = UpdaterPath,
-                Arguments = latestVersion,
-                UseShellExecute = false
+                FileName = "cmd.exe",
+                Arguments = updaterCommand,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                CreateNoWindow = true,
+                UseShellExecute = true
             };
             Process.Start(startInfo);
+
+            
+            Environment.Exit(0);
         }
+
 
         private static void ShowApplicationInfo()
         {
