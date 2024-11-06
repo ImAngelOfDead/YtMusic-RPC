@@ -6,7 +6,7 @@ namespace YTMusicRPC.Services;
 public static class TelegramLogger
 {
     private static Logger logger = Logger.Instance;
-    private static readonly Config _config = ConfigManagerRegedit.Config;
+    private static readonly Config _config = ConfigManager.Config;
 
     static TelegramLogger(){
         

@@ -13,7 +13,7 @@ class Program
 {
     private static readonly string UpdaterPath = Path.Combine(Directory.GetCurrentDirectory(), "updater.exe");
     private static string LastVersion = "N\\A";
-    private static readonly string version = "1.1.0";
+    private static readonly string version = "1.0.0";
     private static readonly string githubUrl = "https://github.com/M3th4d0n/YtMusic-RPC";
     private static readonly Logger logger = Logger.Instance;
     private static NotifyIcon trayIcon;
@@ -24,7 +24,7 @@ class Program
     static async Task Main(string[] args){
         Console.Title = "by m3th4d0n & Anfi1";
         
-        ConfigManagerRegedit.Initialize();
+        ConfigManager.Initialize();
         
         if (await CheckForUpdateAsync()){
             await DownloadUpdaterAsync();

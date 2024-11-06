@@ -1,44 +1,65 @@
-﻿namespace YTMusicRPC.utils;
+using System;
+using System.IO;
+using Newtonsoft.Json;
+using YTMusicRPC.Models;
 
-public static class ConfigManager {
-    private static readonly string configFilePath = "config.txt";
-    private static Logger _logger = Logger.Instance;
+namespace YTMusicRPC.utils
+{
+    public static class ConfigManager
+    {
+        private static readonly string ConfigFilePath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
+            "YTMusicRPC", 
+            "config.json");
 
-    public static bool IsAnalyticsEnabled() {
-        if (!File.Exists(configFilePath)) {
-            return SaveTrackHistory.RequestAnalytics().AnalyticsEnabled;
-        }
+        private static Logger _logger = Logger.Instance;
+        public static Config Config { get; private set; } = new Config();
 
-        var configContent = File.ReadAllText(configFilePath);
-        return configContent.Contains("AnalyticsEnabled=true");
-    }
-
-    public static string GetBotToken() {
-        return GetConfigValue("BotToken");
-    }
-
-    public static string GetChatId() {
-        return GetConfigValue("ChatId");
-    }
-
-    private static string GetConfigValue(string key) {
-        if (!File.Exists(configFilePath)) return null;
-
-        var configLines = File.ReadAllLines(configFilePath);
-        
-        foreach (var line in configLines) {
-            if (line.StartsWith($"{key}=")) {
-                return line.Substring($"{key}=".Length).Trim();
+        static ConfigManager()
+        {
+            if (File.Exists(ConfigFilePath))
+            {
+                Config = LoadConfig();
+                if (Config.AnalyticsEnabled) return;
+            }
+            else
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(ConfigFilePath) ?? string.Empty);
+                Config = SaveTrackHistory.RequestAnalytics();
+                SaveConfig(Config);
             }
         }
 
-        return null;
-    }
+        public static void Initialize()
+        {
+            Console.Clear();
+        }
 
-    private static void SaveConfig(bool isAnalyticsEnabled, string botToken = null, string chatId = null) {
-        string configContent = $"AnalyticsEnabled={(isAnalyticsEnabled ? "true" : "false")}\n" +
-                               $"BotToken={botToken ?? ""}\n" +
-                               $"ChatId={chatId ?? ""}";
-        File.WriteAllText(configFilePath, configContent);
+        private static Config LoadConfig()
+        {
+            var configContent = File.ReadAllText(ConfigFilePath);
+            return JsonConvert.DeserializeObject<Config>(configContent) ?? new Config();
+        }
+
+        private static void SaveConfig(Config config)
+        {
+            var configContent = JsonConvert.SerializeObject(config, Formatting.Indented);
+            File.WriteAllText(ConfigFilePath, configContent);
+        }
+
+        public static bool? IsAnalyticsEnabled()
+        {
+            return Config.AnalyticsEnabled;
+        }
+
+        public static string GetBotToken()
+        {
+            return Config.BotToken;
+        }
+
+        public static string GetChatId()
+        {
+            return Config.ChatId;
+        }
     }
 }
