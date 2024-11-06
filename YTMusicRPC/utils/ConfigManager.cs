@@ -41,25 +41,11 @@ namespace YTMusicRPC.utils
             return JsonConvert.DeserializeObject<Config>(configContent) ?? new Config();
         }
 
-        private static void SaveConfig(Config config)
+        public static void SaveConfig(Config config)
         {
             var configContent = JsonConvert.SerializeObject(config, Formatting.Indented);
             File.WriteAllText(ConfigFilePath, configContent);
         }
-
-        public static bool? IsAnalyticsEnabled()
-        {
-            return Config.AnalyticsEnabled;
-        }
-
-        public static string GetBotToken()
-        {
-            return Config.BotToken;
-        }
-
-        public static string GetChatId()
-        {
-            return Config.ChatId;
-        }
+        
     }
 }

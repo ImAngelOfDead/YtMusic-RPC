@@ -11,17 +11,22 @@ namespace YTMusicRPC;
 
 class Program
 {
+    
     private static readonly string UpdaterPath = Path.Combine(Directory.GetCurrentDirectory(), "updater.exe");
     private static string LastVersion = "N\\A";
     private static readonly string version = "1.1.0";
+    private static readonly string authors = "m3th4d0n & Anfi1";
     private static readonly string githubUrl = "https://github.com/M3th4d0n/YtMusic-RPC";
     private static readonly Logger logger = Logger.Instance;
     private static NotifyIcon trayIcon;
     private static DiscordService discordService;
     private static WebSocketService webSocketService;
 
+    
     [STAThread]
     static async Task Main(string[] args){
+        
+        
         Console.Title = "by m3th4d0n & Anfi1";
         
         ConfigManager.Initialize();
@@ -134,6 +139,10 @@ class Program
 
         webSocketService = new WebSocketService("/trackInfo", discordService);
         webSocketService.Start();
+        
+        var webServer = new WebServer();
+        await webServer.StartAsync();
+        
     }
 
     private static bool IsNewerVersion(string lastVersion, string currentVersion){
