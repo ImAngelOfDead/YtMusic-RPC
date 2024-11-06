@@ -13,7 +13,7 @@ class Program
 {
     private static readonly string UpdaterPath = Path.Combine(Directory.GetCurrentDirectory(), "updater.exe");
     private static string LastVersion = "N\\A";
-    private static readonly string version = "1.0.0";
+    private static readonly string version = "1.1.0";
     private static readonly string githubUrl = "https://github.com/M3th4d0n/YtMusic-RPC";
     private static readonly Logger logger = Logger.Instance;
     private static NotifyIcon trayIcon;
@@ -122,6 +122,7 @@ class Program
             Text = "YtMusic-RPC",
         };
         var contextMenu = new ContextMenuStrip();
+        contextMenu.Items.Add("Hide to tray", null, (s, e) => ConsoleHandler.MinimizeToTray());
         contextMenu.Items.Add("Exit", null, (s, e) => OnExit(s, e));
         trayIcon.ContextMenuStrip = contextMenu;
         trayIcon.DoubleClick += (sender, e) => ConsoleHandler.RestoreFromTray();
