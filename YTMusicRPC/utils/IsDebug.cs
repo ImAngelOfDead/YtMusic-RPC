@@ -2,7 +2,7 @@
 
 public class IsDebug {
     public void DebugCheck() {
-        Logger logger = new Logger();
+        Logger logger = Logger.Instance;
         #if DEBUG
             logger.LogInfo("Debug channel");
         #else

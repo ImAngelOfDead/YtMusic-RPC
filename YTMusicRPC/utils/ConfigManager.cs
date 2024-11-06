@@ -1,11 +1,12 @@
-﻿using YTMusicRPC.utils;
+﻿namespace YTMusicRPC.utils;
+
 public static class ConfigManager {
     private static readonly string configFilePath = "config.txt";
-    static Logger logger = new Logger();
+    private static Logger _logger = Logger.Instance;
 
     public static bool IsAnalyticsEnabled() {
         if (!File.Exists(configFilePath)) {
-            return RequestAnalyticsPermission();
+            return SaveTrackHistory.RequestAnalytics().AnalyticsEnabled;
         }
 
         var configContent = File.ReadAllText(configFilePath);
@@ -32,36 +33,6 @@ public static class ConfigManager {
         }
 
         return null;
-    }
-
-    private static bool RequestAnalyticsPermission() {
-        logger.LogInfo("Would you like to save track history? (y/n): ");
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.Write("> ");
-
-        string input = Console.ReadLine()?.Trim().ToLower();
-        Console.ResetColor();
-        bool isAnalyticsEnabled = input == "y";
-
-        if (isAnalyticsEnabled) {
-            logger.LogInfo("Please enter your Telegram Bot Token: ");
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write("> ");
-            string botToken = Console.ReadLine();
-
-            logger.LogInfo("Please enter your Telegram Chat ID: ");
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write("> ");
-            string chatId = Console.ReadLine();
-
-            SaveConfig(isAnalyticsEnabled, botToken, chatId);
-        }
-        else {
-            SaveConfig(isAnalyticsEnabled);
-            logger.LogInfo("Okay!");
-        }
-
-        return isAnalyticsEnabled;
     }
 
     private static void SaveConfig(bool isAnalyticsEnabled, string botToken = null, string chatId = null) {

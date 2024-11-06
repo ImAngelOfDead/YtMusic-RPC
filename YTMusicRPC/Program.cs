@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
+using System.Reflection;
 using YTMusicRPC.Services;
 using YTMusicRPC.utils;
 using Spectre.Console;
@@ -13,29 +13,18 @@ class Program
 {
     private static readonly string UpdaterPath = Path.Combine(Directory.GetCurrentDirectory(), "updater.exe");
     private static string LastVersion = "N\\A";
-    private static readonly string version = "1.0.9";
+    private static readonly string version = "1.1.0";
     private static readonly string githubUrl = "https://github.com/M3th4d0n/YtMusic-RPC";
-    private static readonly Logger logger = new Logger();
+    private static readonly Logger logger = Logger.Instance;
     private static NotifyIcon trayIcon;
     private static DiscordService discordService;
     private static WebSocketService webSocketService;
 
-    [DllImport("user32.dll")]
-    public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-
-    [DllImport("user32.dll")]
-    static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-    public static void SetConsoleWindowVisibility(bool visible){
-        IntPtr hWnd = FindWindow(null, Console.Title);
-        if (hWnd != IntPtr.Zero){
-            ShowWindow(hWnd, visible ? 1 : 0); // 1 = SW_SHOWNORMAL, 0 = SW_HIDE
-        }
-    }
-
     [STAThread]
     static async Task Main(string[] args){
         Console.Title = "by m3th4d0n & Anfi1";
+        
+        ConfigManagerRegedit.Initialize();
         
         if (await CheckForUpdateAsync()){
             await DownloadUpdaterAsync();
@@ -45,19 +34,42 @@ class Program
         ShowApplicationInfo();
         await InitializeServices();
         InitializeTrayIcon();
-
+        
         logger.LogInfo("After a few seconds, program will disappear into tray");
-        Thread.Sleep(5000);
-        MinimizeToTray();
+        Thread.Sleep(3000);
+        ConsoleHandler.MinimizeToTray();
         
         Application.Run();
     }
 
     private static async Task<bool> CheckForUpdateAsync(){
         LastVersion = await GithubService.GetLatestVersionAsync();
-        return LastVersion != version;
+        if (CompareVersions(LastVersion, version) > 0){
+            return true; 
+        }
+        return false;
     }
 
+    public static int CompareVersions(string version1, string version2)
+    {
+        var v1Parts = version1.Split('.');
+        var v2Parts = version2.Split('.');
+
+        int maxLength = Math.Max(v1Parts.Length, v2Parts.Length);
+
+        for (int i = 0; i < maxLength; i++)
+        {
+            int v1Value = i < v1Parts.Length ? int.Parse(v1Parts[i]) : 0;
+            int v2Value = i < v2Parts.Length ? int.Parse(v2Parts[i]) : 0;
+
+            if (v1Value < v2Value)
+                return -1;  
+            if (v1Value > v2Value)
+                return 1;   
+        }
+
+        return 0;
+    }
     private static async Task DownloadUpdaterAsync(){
         using var client = new HttpClient();
         var updaterUrl = "https://raw.githubusercontent.com/M3th4d0n/YtMusic-RPC/refs/heads/master/Updater.exe";
@@ -99,15 +111,20 @@ class Program
     }
 
     private static void InitializeTrayIcon(){
+        Icon appIcon; // new System.Drawing.Icon("icon.ico")
+        using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("YTMusicRPC.Resources.icon.ico"))
+        {
+            appIcon = new Icon(stream);
+        }
         trayIcon = new NotifyIcon{
-            Icon = new System.Drawing.Icon("icon.ico"),
+            Icon = appIcon,
             Visible = true,
             Text = "YtMusic-RPC",
         };
         var contextMenu = new ContextMenuStrip();
         contextMenu.Items.Add("Exit", null, (s, e) => OnExit(s, e));
         trayIcon.ContextMenuStrip = contextMenu;
-        trayIcon.DoubleClick += (sender, e) => RestoreFromTray();
+        trayIcon.DoubleClick += (sender, e) => ConsoleHandler.RestoreFromTray();
     }
 
     private static async Task InitializeServices(){
@@ -131,13 +148,5 @@ class Program
         discordService.Dispose();
         trayIcon.Dispose();
         Application.Exit();
-    }
-
-    private static void RestoreFromTray(){
-        SetConsoleWindowVisibility(true);
-    }
-
-    private static void MinimizeToTray(){
-        SetConsoleWindowVisibility(false);
     }
 }

@@ -5,7 +5,7 @@ namespace YTMusicRPC.Services;
 
 public class WebSocketService
 {
-    public Logger logger = new Logger();
+    public Logger logger = Logger.Instance;
     private readonly WebSocketServer _server;
     private readonly DiscordService _discordService;
 

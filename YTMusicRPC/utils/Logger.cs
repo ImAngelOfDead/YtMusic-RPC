@@ -4,7 +4,15 @@ namespace YTMusicRPC.utils;
 
 public class Logger
 {
-    public void LogInfo(string message){
+    private static readonly Logger instance = new Logger();
+
+    public static Logger Instance => instance;
+
+    private Logger()
+    {
+        
+    }
+    public  void LogInfo(string message){
         AnsiConsole.MarkupLine("[cyan][[INFO]][/] [bold]{0}[/]", message);
     }
 

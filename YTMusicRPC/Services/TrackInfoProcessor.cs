@@ -8,7 +8,7 @@ namespace YTMusicRPC.Services;
 
 public class TrackInfoProcessor : WebSocketBehavior
 {
-    public Logger logger = new Logger();
+    private Logger _logger = Logger.Instance;
     private readonly DiscordService _discordService;
 
     public TrackInfoProcessor(DiscordService discordService){
@@ -34,7 +34,7 @@ public class TrackInfoProcessor : WebSocketBehavior
             }
         }
         else{
-            logger.LogError("Failed to deserialize data: " + e.Data);
+            _logger.LogError("Failed to deserialize data: " + e.Data);
         }
     }
 }

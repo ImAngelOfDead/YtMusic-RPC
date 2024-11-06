@@ -10,6 +10,7 @@
         <UseWindowsForms>true</UseWindowsForms>
         <AssemblyName>YTMusicRPC</AssemblyName>
         <RootNamespace>YTMusicRPC</RootNamespace>
+        <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,9 +21,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="icon.ico">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+      <None Remove="icon.ico" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\icon.ico" />
     </ItemGroup>
 
 </Project>

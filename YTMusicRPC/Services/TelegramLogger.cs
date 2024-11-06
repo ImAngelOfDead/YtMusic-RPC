@@ -1,24 +1,32 @@
-﻿using YTMusicRPC.utils;
+﻿using YTMusicRPC.Models;
+using YTMusicRPC.utils;
 
-public static class TelegramLogger {
-    static Logger logger = new Logger();
-    private static readonly string botToken = ConfigManager.GetBotToken();
-    private static readonly string chatId = ConfigManager.GetChatId();
-    private static readonly bool analyticsEnabled = ConfigManager.IsAnalyticsEnabled();
+namespace YTMusicRPC.Services;
 
+public static class TelegramLogger
+{
+    private static Logger logger = Logger.Instance;
+    private static readonly Config _config = ConfigManagerRegedit.Config;
+
+    static TelegramLogger(){
+        
+    }
+    
     public static async Task SendLogAsync(string message) {
-        if (!analyticsEnabled) {
+        if (!_config.AnalyticsEnabled) {
             // analytic disabled
             return;
         }
         
-        if (string.IsNullOrEmpty(botToken) || string.IsNullOrEmpty(chatId)) {
-            logger.LogWarning("Telegram bot token or chat ID is missing. Please check the configuration.");
+        if (string.IsNullOrEmpty(_config.BotToken) || string.IsNullOrEmpty(_config.ChatId)) {
+            logger.LogWarning("Telegram bot token or chat ID is missing. Please update the configuration.");
+            ConsoleHandler.RestoreFromTray();
+            SaveTrackHistory.RequestAnalytics();
             return;
         }
 
         using (HttpClient client = new HttpClient()) {
-            var url = $"https://api.telegram.org/bot{botToken}/sendMessage?chat_id={chatId}&text={Uri.EscapeDataString(message)}&parse_mode=Markdown";
+            var url = $"https://api.telegram.org/bot{_config.BotToken}/sendMessage?chat_id={_config.ChatId}&text={Uri.EscapeDataString(message)}&parse_mode=Markdown";
             HttpResponseMessage response = await client.GetAsync(url);
         }
     }
