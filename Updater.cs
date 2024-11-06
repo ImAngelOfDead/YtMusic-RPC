@@ -4,6 +4,8 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.IO.Compression;
+// dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true --self-contained=true -o publish
+
 
 namespace Updater
 {
@@ -41,7 +43,7 @@ namespace Updater
                 Console.WriteLine("[INFO] Update applied successfully.");
         
                 
-                string mainAppPath = Path.Combine(extractionPath, "people2json.exe");
+                string mainAppPath = Path.Combine(extractionPath, "YTMusicRPC.exe");
                 Console.WriteLine("[INFO] Launching main application...");
                 ProcessStartInfo startInfo = new ProcessStartInfo("cmd.exe")
                 {
