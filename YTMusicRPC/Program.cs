@@ -25,8 +25,6 @@ class Program
     
     [STAThread]
     static async Task Main(string[] args){
-        
-        
         Console.Title = "by m3th4d0n & Anfi1";
         
         ConfigManager.Initialize();
@@ -128,6 +126,7 @@ class Program
         };
         var contextMenu = new ContextMenuStrip();
         contextMenu.Items.Add("Hide to tray", null, (s, e) => ConsoleHandler.MinimizeToTray());
+        contextMenu.Items.Add("Change Config", null, (s, e) => OpenBrowser(WebServer.Domain));
         contextMenu.Items.Add("Exit", null, (s, e) => OnExit(s, e));
         trayIcon.ContextMenuStrip = contextMenu;
         trayIcon.DoubleClick += (sender, e) => ConsoleHandler.RestoreFromTray();
@@ -141,10 +140,24 @@ class Program
         webSocketService.Start();
         
         var webServer = new WebServer();
-        await webServer.StartAsync();
-        
+        _ = Task.Run(async () => await webServer.StartAsync());
     }
 
+    private static void OpenBrowser(string url)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("Failed to open browser: " + ex.Message);
+        }
+    }
     private static bool IsNewerVersion(string lastVersion, string currentVersion){
         return new Version(lastVersion) > new Version(currentVersion);
     }

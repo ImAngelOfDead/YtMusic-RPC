@@ -1,8 +1,5 @@
-﻿using System;
-using System.IO;
-using System.Net;
+﻿using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using YTMusicRPC.utils;
 
@@ -12,17 +9,18 @@ namespace YTMusicRPC.Services
     {
         private static readonly Logger logger = Logger.Instance;
         private readonly HttpListener _listener;
-
+        public const string Domain = "http://localhost:1337/";
+        
         public WebServer()
         {
             _listener = new HttpListener();
-            _listener.Prefixes.Add("http://localhost:1337/");
+            _listener.Prefixes.Add(Domain);
         }
 
         public async Task StartAsync()
         {
             _listener.Start();
-            logger.LogInfo("Web server started on http://localhost:1337");
+            logger.LogInfo($"Web server started on {Domain}");
 
             while (true)
             {
