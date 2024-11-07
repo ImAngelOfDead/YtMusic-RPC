@@ -26,6 +26,8 @@
 
     <ItemGroup>
       <EmbeddedResource Include="Resources\icon.ico" />
+      <None Remove="Pages\Html\index.html" />
+      <EmbeddedResource Include="Pages\Html\index.html" />
     </ItemGroup>
 
 </Project>

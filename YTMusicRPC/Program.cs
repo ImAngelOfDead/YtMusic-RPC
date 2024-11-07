@@ -39,8 +39,12 @@ class Program
         InitializeTrayIcon();
         
         logger.LogInfo("After a few seconds, program will disappear into tray");
-        Thread.Sleep(3000);
-        ConsoleHandler.MinimizeToTray();
+        
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(3000);
+            ConsoleHandler.MinimizeToTray();
+        });
         
         Application.Run();
     }
