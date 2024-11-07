@@ -10,12 +10,11 @@ namespace YTMusicRPC.Services;
     {
         private readonly Logger _logger = Logger.Instance;
         private readonly DiscordService _discordService;
-        private readonly HistoryService _historyService;
+        private readonly HistoryService _historyService = HistoryService.Instance;
 
-        public TrackInfoProcessor(DiscordService discordService, HistoryService historyService)
+        public TrackInfoProcessor(DiscordService discordService)
         {
             _discordService = discordService;
-            _historyService = historyService;
         }
 
         protected override void OnMessage(MessageEventArgs e)
@@ -32,7 +31,7 @@ namespace YTMusicRPC.Services;
                 if (isTrackChanged)
                 {
                     // Сохраняем информацию о треке в историю
-                    _historyService.SaveTrackInfo(trackInfo, trackInfo.VideoId);
+                    _historyService.SaveTrackInfo(trackInfo);
 
                     trackInfo.Artist = trackInfo.Artist.Replace("\n", "").Replace("\r", "");
                     string telegramMessage = $"🎵 Now Playing:\nArtist: {trackInfo.Artist}\n" +
