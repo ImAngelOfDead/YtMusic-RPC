@@ -6,35 +6,46 @@ using Logger = YTMusicRPC.utils.Logger;
 
 namespace YTMusicRPC.Services;
 
-public class TrackInfoProcessor : WebSocketBehavior
-{
-    private Logger _logger = Logger.Instance;
-    private readonly DiscordService _discordService;
+    public class TrackInfoProcessor : WebSocketBehavior
+    {
+        private readonly Logger _logger = Logger.Instance;
+        private readonly DiscordService _discordService;
+        private readonly HistoryService _historyService;
 
-    public TrackInfoProcessor(DiscordService discordService){
-        _discordService = discordService;
-    }
+        public TrackInfoProcessor(DiscordService discordService, HistoryService historyService)
+        {
+            _discordService = discordService;
+            _historyService = historyService;
+        }
 
-    protected override void OnMessage(MessageEventArgs e){
-        var trackInfo = JsonConvert.DeserializeObject<TrackInfo>(e.Data);
+        protected override void OnMessage(MessageEventArgs e)
+        {
+            var trackInfo = JsonConvert.DeserializeObject<TrackInfo>(e.Data);
 
-        if (trackInfo != null){
-            bool isTrackChanged = _discordService.LastVideoId != trackInfo.VideoId;
+            if (trackInfo != null)
+            {
+                bool isTrackChanged = _discordService.LastVideoId != trackInfo.VideoId;
 
-            _discordService.UpdatePresence(trackInfo.Track, trackInfo.Artist, trackInfo.Cover, trackInfo.CurrentTime,
-                trackInfo.VideoId, trackInfo.IsPlaying);
+                _discordService.UpdatePresence(trackInfo.Track, trackInfo.Artist, trackInfo.Cover, trackInfo.CurrentTime,
+                    trackInfo.VideoId, trackInfo.IsPlaying);
 
-            if (isTrackChanged){
-                trackInfo.Artist = trackInfo.Artist.Replace("\n", "").Replace("\r", "");
-                string telegramMessage = $"🎵 Now Playing:\nArtist: {trackInfo.Artist}\n" +
-                                         $"Time: {DateTime.Now.ToString("MM/dd/yyyy hh:mm")}\n" +
-                                         $"[Listen on YouTube Music](https://music.youtube.com/watch?v={trackInfo.VideoId})";
+                if (isTrackChanged)
+                {
+                    // Сохраняем информацию о треке в историю
+                    _historyService.SaveTrackInfo(trackInfo, trackInfo.VideoId);
 
-                Task.Run(() => TelegramLogger.SendLogAsync(telegramMessage));
+                    trackInfo.Artist = trackInfo.Artist.Replace("\n", "").Replace("\r", "");
+                    string telegramMessage = $"🎵 Now Playing:\nArtist: {trackInfo.Artist}\n" +
+                                             $"Time: {DateTime.Now:MM/dd/yyyy hh:mm}\n" +
+                                             $"[Listen on YouTube Music](https://music.youtube.com/watch?v={trackInfo.VideoId})";
+
+                    Task.Run(() => TelegramLogger.SendLogAsync(telegramMessage));
+                }
+            }
+            else
+            {
+                _logger.LogError("Failed to deserialize data: " + e.Data);
             }
         }
-        else{
-            _logger.LogError("Failed to deserialize data: " + e.Data);
-        }
     }
-}
+

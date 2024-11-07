@@ -7,7 +7,7 @@ namespace YTMusicRPC.utils
 {
     public static class ConfigManager
     {
-        private static readonly string ConfigFilePath = Path.Combine(
+        public static readonly string ConfigFilePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
             "YTMusicRPC", 
             "config.json");

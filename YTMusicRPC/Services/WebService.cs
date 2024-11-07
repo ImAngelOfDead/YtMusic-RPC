@@ -12,6 +12,7 @@ public class WebServer
     private readonly HttpListener _listener;
     private readonly CancellationTokenSource _cts = new CancellationTokenSource();
     public const string Domain = "http://localhost:1337/";
+    private string _historyFolderPath;
 
     public WebServer(){
         _listener = new HttpListener();
@@ -42,11 +43,18 @@ public class WebServer
         }
     }
 
-    private async Task ProcessRequestAsync(HttpListenerContext context){
-        if (context.Request.HttpMethod == "POST"){
+    private async Task ProcessRequestAsync(HttpListenerContext context)
+    {
+        if (context.Request.Url.AbsolutePath == "/history")
+        {
+            await HandleHistoryRequest(context);
+        }
+        else if (context.Request.HttpMethod == "POST")
+        {
             await HandlePostRequest(context);
         }
-        else{
+        else
+        {
             await HandleGetRequest(context);
         }
     }
@@ -92,6 +100,30 @@ public class WebServer
 
             return filledHtml;
         }
+    }
+    
+    private async Task HandleHistoryRequest(HttpListenerContext context)
+    {
+        string configFolderPath = Path.GetDirectoryName(ConfigManager.ConfigFilePath) ?? string.Empty;
+        _historyFolderPath = Path.Combine(configFolderPath, "history");
+    
+        var historyEntries = new List<object>();
+        var files = Directory.GetFiles(_historyFolderPath, "*.json"); 
+
+        foreach (var file in files)
+        {
+            var content = await File.ReadAllTextAsync(file);
+            var entries = JsonConvert.DeserializeObject<List<object>>(content);
+            historyEntries.AddRange(entries);
+        }
+
+        string jsonResponse = JsonConvert.SerializeObject(historyEntries, Formatting.Indented);
+        byte[] buffer = Encoding.UTF8.GetBytes(jsonResponse);
+
+        context.Response.ContentLength64 = buffer.Length;
+        context.Response.ContentType = "application/json";
+        await context.Response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+        context.Response.OutputStream.Close();
     }
 
     public void Stop(){
