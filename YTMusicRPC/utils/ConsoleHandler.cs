@@ -4,7 +4,7 @@ namespace YTMusicRPC.utils;
 
 public static class ConsoleHandler
 {
-    private static bool _isMinimizedToTray = false;
+    public static bool _isMinimizedToTray{ get; private set; } = false;
     [DllImport("user32.dll")]
     private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
@@ -16,6 +16,15 @@ public static class ConsoleHandler
             ShowWindow(hWnd, visible ? 1 : 0); // 1 = SW_SHOWNORMAL, 0 = SW_HIDE
         }
     }
+
+    public static void ChangeState(){
+        if (_isMinimizedToTray){
+            RestoreFromTray();
+            return;
+        }
+        MinimizeToTray();
+    }
+    
     public static void RestoreFromTray(){
         if (!_isMinimizedToTray){
             return;

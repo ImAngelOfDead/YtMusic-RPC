@@ -6,12 +6,10 @@ using Spectre.Console;
 using Panel = Spectre.Console.Panel;
 
 // git reset --hard origin/master
-
 namespace YTMusicRPC;
 
 class Program
 {
-    
     private static readonly string UpdaterPath = Path.Combine(Directory.GetCurrentDirectory(), "updater.exe");
     private static string LastVersion = "N\\A";
     private static readonly string version = "1.1.0";
@@ -21,7 +19,9 @@ class Program
     private static NotifyIcon trayIcon;
     private static DiscordService discordService;
     private static WebSocketService webSocketService;
-
+    
+    private const string hideToTrayText = "Hide to tray";
+    private const string showToTrayText = "Show console";
     
     [STAThread]
     static async Task Main(string[] args){
@@ -114,8 +114,8 @@ class Program
     }
 
     private static void InitializeTrayIcon(){
-        Icon appIcon; // new System.Drawing.Icon("icon.ico")
-        using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("YTMusicRPC.Resources.icon.ico"))
+        Icon appIcon;
+        using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("YTMusicRPC.Resources.icon.ico")!)
         {
             appIcon = new Icon(stream);
         }
@@ -125,9 +125,19 @@ class Program
             Text = "YtMusic-RPC",
         };
         var contextMenu = new ContextMenuStrip();
-        contextMenu.Items.Add("Hide to tray", null, (s, e) => ConsoleHandler.MinimizeToTray());
-        contextMenu.Items.Add("Change Config", null, (s, e) => OpenBrowser(WebServer.Domain));
-        contextMenu.Items.Add("Exit", null, (s, e) => OnExit(s, e));
+        var trayControlItem = new ToolStripMenuItem(hideToTrayText, null, (s, e) => ConsoleHandler.ChangeState());
+        var changeConfigItem = new ToolStripMenuItem("Change Config", null, (s, e) => OpenBrowser(WebServer.Domain));
+        var exitItem = new ToolStripMenuItem("Exit", null, (s, e) => OnExit(s, e));
+
+        contextMenu.Items.Add(trayControlItem);
+        contextMenu.Items.Add(changeConfigItem);
+        contextMenu.Items.Add(exitItem);
+        
+        contextMenu.Opening += (s, e) =>
+        {
+            trayControlItem.Text = ConsoleHandler._isMinimizedToTray ? showToTrayText : hideToTrayText;
+        };
+        
         trayIcon.ContextMenuStrip = contextMenu;
         trayIcon.DoubleClick += (sender, e) => ConsoleHandler.RestoreFromTray();
     }
@@ -142,7 +152,7 @@ class Program
         var webServer = new WebServer();
         _ = Task.Run(async () => await webServer.StartAsync());
     }
-
+    
     private static void OpenBrowser(string url)
     {
         try
