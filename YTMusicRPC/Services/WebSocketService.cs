@@ -8,7 +8,6 @@ public class WebSocketService
     public Logger logger = Logger.Instance;
     private readonly WebSocketServer _server;
     private readonly DiscordService _discordService;
-    private readonly HistoryService _historyService = HistoryService.Instance;
 
     public WebSocketService(string path, DiscordService discordService){
         _server = new WebSocketServer("ws://localhost:5000");
