@@ -6,20 +6,16 @@
     <title>YTMusicRPC Configuration</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-
         body {
             background: linear-gradient(120deg, #3b82f6, #9333ea, #f59e0b);
             background-size: 300% 300%;
             animation: gradientBG 6s ease infinite;
         }
-
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-
-
         .loader {
             border: 4px solid rgba(255, 255, 255, 0.2);
             border-top: 4px solid #fff;
@@ -30,7 +26,6 @@
             display: none;
             margin: 10px auto 0;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -38,50 +33,56 @@
     </style>
 </head>
 <body class="flex items-center justify-center h-screen text-gray-200">
-<div class="w-80 p-6 bg-white bg-opacity-20 shadow-lg rounded-lg backdrop-blur-md border border-white/30">
-    <h1 class="text-2xl font-semibold text-center text-gray-200 mb-4">YTMusicRPC Config</h1>
-    <form id="configForm" class="space-y-4">
-        <div>
-            <label for="chatId" class="block font-medium text-gray-200">Chat ID:</label>
-            <input type="text" id="chatId" name="ChatId" value="{ChatId}"
-                   class="w-full mt-1 p-2 bg-transparent border border-gray-300 rounded-md text-gray-200 placeholder-gray-300
-                   focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 ease-in-out">
+<div class="flex flex-col md:flex-row items-center md:items-start space-y-8 md:space-y-0 md:space-x-8 w-full max-w-4xl p-6 bg-gray-900 bg-opacity-90 rounded-lg shadow-lg">
+    <!-- Форма конфигурации -->
+    <div class="w-full md:w-1/3">
+        <h1 class="text-3xl font-bold text-center text-white mb-6">YTMusicRPC Config</h1>
+        <form id="configForm" class="space-y-6">
+            <div class="space-y-1">
+                <label for="chatId" class="text-white font-medium">Chat ID</label>
+                <input type="text" id="chatId" name="ChatId" placeholder="Enter Chat ID"
+                       class="w-full p-2 rounded border bg-gray-800 text-white placeholder-gray-500 focus:outline-none
+                       focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="space-y-1">
+                <label for="token" class="text-white font-medium">Token</label>
+                <input type="text" id="token" name="Token" placeholder="Enter Bot Token"
+                       class="w-full p-2 rounded border bg-gray-800 text-white placeholder-gray-500 focus:outline-none
+                       focus:ring-2 focus:ring-blue-500">
+            </div>
+            <button type="button" onclick="updateConfig()"
+                    class="w-full py-2 bg-blue-500 hover:bg-blue-600 rounded text-white font-semibold
+                    transition-transform duration-300 ease-in-out transform hover:scale-105">Save</button>
+        </form>
+        <div class="loader" id="loader"></div>
+        <p id="responseMessage" class="mt-4 text-center text-sm text-blue-200"></p>
+    </div>
+    <!-- Блок истории треков -->
+    <div class="w-full md:w-2/3">
+        <h2 class="text-2xl font-semibold text-center text-white mb-6">Track History</h2>
+        <!-- Поле поиска -->
+        <div class="mb-4">
+            <input type="text" id="searchInput" placeholder="Search tracks..."
+                   class="w-full p-2 rounded border bg-gray-800 text-white placeholder-gray-500 focus:outline-none
+                   focus:ring-2 focus:ring-blue-500">
         </div>
-
-        <div>
-            <label for="token" class="block font-medium text-gray-200">Token:</label>
-            <input type="text" id="token" name="Token" value="{BotToken}"
-                   class="w-full mt-1 p-2 bg-transparent border border-gray-300 rounded-md text-gray-200 placeholder-gray-300
-                   focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 ease-in-out">
-        </div>
-
-        <button type="button" onclick="updateConfig()"
-                class="w-full py-2 mt-4 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-purple-500 hover:to-blue-500
-                text-white font-semibold rounded-md transition-transform duration-300 ease-in-out transform hover:scale-105">
-            Save
-        </button>
-    </form>
-    <div class="loader" id="loader"></div>
-    <p id="responseMessage" class="mt-4 text-center text-sm text-blue-200"></p>
-
-
-    <div class="mt-6">
-        <h2 class="text-xl font-semibold text-center text-gray-200 mb-4">Track History</h2>
-        <div id="historyContainer" class="space-y-2 max-h-64 overflow-y-auto">
-            
+        <div id="historyContainer" class="space-y-4 max-h-96 overflow-y-auto">
+            <!-- История треков будет загружаться сюда -->
         </div>
     </div>
 </div>
 
 <script>
+    let historyData = [];
+
     async function updateConfig() {
         const chatId = document.getElementById('chatId').value;
         const token = document.getElementById('token').value;
         const loader = document.getElementById('loader');
         const responseMessage = document.getElementById('responseMessage');
 
-        loader.style.display = 'block';  
-        responseMessage.innerText = '';  
+        loader.style.display = 'block';
+        responseMessage.innerText = '';
 
         try {
             const response = await fetch('', {
@@ -100,25 +101,39 @@
         }
     }
 
-
     async function loadHistory() {
         try {
             const response = await fetch('/history');
-            const historyData = await response.json();
-            const historyContainer = document.getElementById('historyContainer');
-            historyContainer.innerHTML = '';  
-
-            historyData.forEach(entry => {
-                const trackDiv = document.createElement('div');
-                trackDiv.classList.add('p-2', 'bg-gray-800', 'rounded-md', 'text-gray-200');
-                trackDiv.innerHTML = `<strong>${entry.Time}</strong> - ${entry.Artist} - ${entry.Track} <a href="${entry.Url}" target="_blank" class="text-blue-400">Listen</a>`;
-                historyContainer.appendChild(trackDiv);
-            });
+            historyData = await response.json();
+            displayHistory(historyData);
         } catch (error) {
             console.error('Error loading history:', error);
         }
     }
 
+    function displayHistory(data) {
+        const historyContainer = document.getElementById('historyContainer');
+        historyContainer.innerHTML = '';
+
+        data.forEach(entry => {
+            const trackDiv = document.createElement('div');
+            trackDiv.classList.add('p-2', 'bg-gray-800', 'rounded-md', 'text-gray-200', 'flex', 'justify-between', 'items-center');
+            trackDiv.innerHTML = `<div><strong>${entry.Time}</strong> - ${entry.Artist} - ${entry.Track}</div>
+                                  <a href="${entry.Url}" target="_blank" class="text-blue-400 hover:underline">Listen</a>`;
+            historyContainer.appendChild(trackDiv);
+        });
+    }
+
+    function filterHistory() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const filteredData = historyData.filter(entry =>
+            entry.Artist.toLowerCase().includes(searchTerm) ||
+            entry.Track.toLowerCase().includes(searchTerm)
+        );
+        displayHistory(filteredData);
+    }
+
+    document.getElementById('searchInput').addEventListener('input', filterHistory);
 
     document.addEventListener('DOMContentLoaded', loadHistory);
 </script>
