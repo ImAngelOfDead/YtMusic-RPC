@@ -102,20 +102,8 @@ public class WebServer
         }
     }
     
-    private async Task HandleHistoryRequest(HttpListenerContext context)
-    {
-        string configFolderPath = Path.GetDirectoryName(ConfigManager.ConfigFilePath) ?? string.Empty;
-        _historyFolderPath = Path.Combine(configFolderPath, "history");
-    
-        var historyEntries = new List<object>();
-        var files = Directory.GetFiles(_historyFolderPath, "*.json"); 
-
-        foreach (var file in files)
-        {
-            var content = await File.ReadAllTextAsync(file);
-            var entries = JsonConvert.DeserializeObject<List<object>>(content);
-            historyEntries.AddRange(entries);
-        }
+    private async Task HandleHistoryRequest(HttpListenerContext context){
+        var historyEntries = await HistoryService.Instance.GetHistory();
 
         string jsonResponse = JsonConvert.SerializeObject(historyEntries, Formatting.Indented);
         byte[] buffer = Encoding.UTF8.GetBytes(jsonResponse);
